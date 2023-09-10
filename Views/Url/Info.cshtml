@@ -1,0 +1,43 @@
+﻿@model Url
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Info";
+    var user = User as ClaimsPrincipal;
+    var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+    var userId = userIdClaim == null ? null : userIdClaim.Value;
+}
+<style>
+    p {
+      max-width: 100%; /* Максимальная ширина ячейки */
+      white-space: nowrap; /* Запрет переноса текста */
+      overflow: hidden; /* Скрытие части текста, выходящей за границы ячейки */
+      text-overflow: ellipsis; /* Заменяет обрезанный текст многоточием (...) */
+    }
+</style>
+
+<h2 class="text-primary">URL Info</h2><br /><br />
+
+<h3>Full URL</h3>
+<p title="@Model.FullUrl">@Model.FullUrl</p>
+
+<h3>Shortened URL</h3>
+<p>@Model.ShortenedUrl</p>
+
+<h3>Created by</h3>
+<p>@Model.CreatedBy</p>
+
+<h3>Created date</h3>
+<p>@Model.CreatedDate</p>
+
+<h3>Description</h3>
+<p>@Model.Description</p>
+
+
+<div class="w-100 btn-group" role="group">
+    <a asp-controller="Url" asp-action="Table" class="btn btn-secondary"> &nbsp; Go back</a> &nbsp;
+    @if (@Model.CreatedBy == userId) {
+        <a asp-controller="Url" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger"><i class="bi bi-trash"></i> &nbsp; Delete</a>
+    }
+</div>
+
+

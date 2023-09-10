@@ -1,0 +1,65 @@
+﻿@using System.Security.Claims
+@model IEnumerable<Url>
+@{
+    ViewData["Title"] = "URLS Table View";
+    var user = User as ClaimsPrincipal;
+    var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+    var userId = userIdClaim == null ? null : userIdClaim.Value;
+}
+<partial name="_Notification"/>
+<style>
+    td {
+      max-width: 200px; /* Максимальная ширина ячейки */
+      white-space: nowrap; /* Запрет переноса текста */
+      overflow: hidden; /* Скрытие части текста, выходящей за границы ячейки */
+      text-overflow: ellipsis; /* Заменяет обрезанный текст многоточием (...) */
+    }
+</style>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">URLS List</h2>
+        </div>
+        
+        @if(User.Identity.IsAuthenticated) {
+            <div class="col-6 text-end">
+                <a asp-controller="Url" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-person-plus"></i> &nbsp; Create new URL
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<table class="table table-bordered table-striped" style="width:100%" id="data_table">
+    <thead>
+        <tr>
+            <th>URL</th>
+            <th>Shortened URL</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var obj in Model) {
+            <tr>
+                <td title="@obj.FullUrl">@obj.FullUrl</td>
+                <td>@obj.ShortenedUrl</td>
+                @if (User.Identity.IsAuthenticated) {
+                    <td>
+                        <div class="w-100 btn-group" role="group">
+                                <a asp-controller="Url" asp-action="Info" asp-route-id="@obj.Id" class="btn btn-secondary"><i class="bi bi-info-circle"></i> &nbsp; Info</a>
+                        </div>
+                    </td>
+                }
+                @if (obj.CreatedBy == userId || User.IsInRole("Admin")) {
+                    <td>
+                        <div class="w-100 btn-group" role="group">
+                            <a asp-controller="Url" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger"><i class="bi bi-trash"></i> &nbsp; Delete</a>
+                        </div>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

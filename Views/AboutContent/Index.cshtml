@@ -1,0 +1,16 @@
+﻿@model AboutContentModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="pb-5">
+    @Html.Raw(Model.Content)
+</div>
+
+@if (@User.IsInRole("Admin")) {
+    <form method="post" asp-action="Edit"> 
+        <input type="hidden" asp-for="Id" />
+        <textarea asp-for="Content"></textarea><br>
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
+}
